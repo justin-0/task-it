@@ -5,24 +5,32 @@ import { NextResponse } from 'next/server';
 const isPublicRoute = createRouteMatcher(['/', '/sign-in', 'sign-up']);
 
 export default clerkMiddleware((auth, req) => {
-    // ARE WE AUTH'D AND IS REQUEST A PUBLIC ROUTE
+    // If authenticated and on a public route (except root)
     if (auth().userId && isPublicRoute(req)) {
         let path = '/select-organisation';
 
-        // WE HAVE AN ORGANISATION ID
+        // We have an organisation ID
         if (auth().orgId) {
             path = `/organisation/${auth().orgId}`;
         }
 
         const org = new URL(path, req.url);
-        // REDIRECT TO URL BASED ON PATH CONDITION - SELECT ORG OR CURRENT ORG ID PAGES
+        // Redirect to URL based on path condition - select org or current org ID pages
         return NextResponse.redirect(org);
     }
 
-    // WE ARE NOT AUTH'D AND THE ROUTE IS PUBLIC
-    if (!auth().userId && isPublicRoute(req)) {
-        return NextResponse.redirect('/');
+    // If not authenticated and not on a public route
+    if (!auth().userId && !isPublicRoute(req)) {
+        return auth().redirectToSignIn({ returnBackUrl: req.url });
     }
+
+    // If authenticated but no org ID
+    if (auth().userId && !auth().orgId) {
+        return NextResponse.redirect(new URL('/select-organisation', req.url));
+    }
+
+    // Allow the request to proceed
+    return NextResponse.next();
 });
 
 export const config = {
