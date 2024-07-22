@@ -1,16 +1,26 @@
+import Link from 'next/link';
+
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
     return (
-        <div className="mx-6 md:mx-24">
+        <div className="h-screen bg-slate-200 px-6 md:px-24">
             <header className="py-4">
                 <nav className="flex items-center justify-between">
                     <div>
                         <span className="font-semi text-sm">task-it</span>
                     </div>
-                    <div>
-                        <Button size="sm" className="md:hidden">
-                            Get started
+                    <div className="flex gap-2">
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            className="md:hidden"
+                            asChild
+                        >
+                            <Link href="/sign-in">Log in</Link>
+                        </Button>
+                        <Button size="sm" className="md:hidden" asChild>
+                            <Link href="/sign-up">Get started</Link>
                         </Button>
                     </div>
                 </nav>
@@ -22,9 +32,19 @@ export default function Home() {
                 <p className="mt-2 text-pretty text-center text-lg font-light">
                     Keep everything in the same place-even if your team isn't
                 </p>
-                <Button className="mt-3 hidden md:block" size="lg">
-                    Get started
-                </Button>
+                <div className="mt-5 flex gap-4">
+                    <Button className="hidden md:flex" size="lg" asChild>
+                        <Link href="/sign-up">Get started</Link>
+                    </Button>
+                    <Button
+                        className="hidden md:flex"
+                        size="lg"
+                        variant="outline"
+                        asChild
+                    >
+                        <Link href="/sign-in">Log in</Link>
+                    </Button>
+                </div>
             </main>
         </div>
     );
